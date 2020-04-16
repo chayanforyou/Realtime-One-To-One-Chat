@@ -36,16 +36,16 @@ class Chat implements MessageComponentInterface
             $onlineUsers['onlineUsers'] = $this->activeUsers;
             $this->sendMessageToAll(json_encode($onlineUsers));
         } elseif ($jsonMsg->type == "message") {
-            $this->sendMessageToOthers($from, json_encode($jsonMsg));
+            $this->sendMessageToOthers($from, $jsonMsg);
         }
     }
 
     public function sendMessageToOthers($from, $msg)
     {
         foreach ($this->clients as $client) {
-            if ($from !== $client) {
+           if ($msg->msgFor === $client->resourceId) {
                 
-                $client->send($msg);
+                $client->send(json_encode($msg));
             }
         }
     }
